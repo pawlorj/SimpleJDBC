@@ -25,7 +25,7 @@
 
     <target name="compile" description="compiles source code">
         <mkdir dir="target/classes"/>
-        <javac srcdir="./src" destdir="target/classes" includeAntRuntime="false" source="1.5" debug="true">
+        <javac srcdir="./src" destdir="target/classes" includeAntRuntime="false" source="1.7" debug="true">
             <classpath>
                 <path refid="classpath"/>
             </classpath>
@@ -35,7 +35,7 @@
 
     <target name="compile-tests" depends="compile" description="compiles test files only">
         <mkdir dir="target/test-classes"/>
-        <javac srcdir="./test" destdir="target/test-classes" includeAntRuntime="false" source="1.5" debug="true">
+        <javac srcdir="./test" destdir="target/test-classes" includeAntRuntime="false" source="1.7" debug="true">
             <classpath>
                 <path refid="classpath"/>
                 <pathelement path="target/classes"/>

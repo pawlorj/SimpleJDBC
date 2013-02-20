@@ -13,15 +13,6 @@ public class SimpleJDBCTestHelper {
 
 	public static Connection getConnection() throws Exception {
 		Properties prop = new Properties();
-		prop.setProperty("secretKey", System.getProperty("secretKey"));
-		prop.setProperty("accessKey", System.getProperty("accessKey"));
-		
-		if (System.getProperty("proxyHost") != null && (!System.getProperty("proxyHost").equals(""))) {			
-			prop.setProperty("proxyHost", System.getProperty("proxyHost", ""));
-			prop.setProperty("proxyPassword", System.getProperty("proxyPassword", ""));
-			prop.setProperty("proxyUsername", System.getProperty("proxyUsername", ""));
-			prop.setProperty("proxyPort", System.getProperty("proxyPort", ""));
-		}
 		
 		Class.forName("com.beacon50.jdbc.aws.SimpleDBDriver");
 		return DriverManager.getConnection("jdbc:simpledb://sdb.amazonaws.com",	prop);

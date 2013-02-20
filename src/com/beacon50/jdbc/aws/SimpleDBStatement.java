@@ -1,7 +1,14 @@
 package com.beacon50.jdbc.aws;
 
-import com.amazonaws.services.simpledb.model.*;
-import com.amazonaws.services.simpledb.util.SimpleDBUtils;
+import java.io.StringReader;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
+
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.operators.relational.ExpressionList;
@@ -14,18 +21,20 @@ import net.sf.jsqlparser.statement.select.FromItem;
 import net.sf.jsqlparser.statement.select.PlainSelect;
 import net.sf.jsqlparser.statement.select.Select;
 import net.sf.jsqlparser.statement.update.Update;
-import net.sf.jsqlparser.util.deparser.DeleteDeParser;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
-import java.io.StringReader;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import com.amazonaws.services.simpledb.model.Attribute;
+import com.amazonaws.services.simpledb.model.BatchPutAttributesRequest;
+import com.amazonaws.services.simpledb.model.CreateDomainRequest;
+import com.amazonaws.services.simpledb.model.DeleteAttributesRequest;
+import com.amazonaws.services.simpledb.model.DomainMetadataRequest;
+import com.amazonaws.services.simpledb.model.Item;
+import com.amazonaws.services.simpledb.model.ReplaceableAttribute;
+import com.amazonaws.services.simpledb.model.ReplaceableItem;
+import com.amazonaws.services.simpledb.model.SelectRequest;
+import com.amazonaws.services.simpledb.util.SimpleDBUtils;
 
 /**
  *
@@ -87,13 +96,14 @@ public class SimpleDBStatement extends AbstractStatement {
                 String origDomain = ((PlainSelect) select.getSelectBody()).getFromItem().toString();
                 String domain = this.getReadTableName(((PlainSelect) select.getSelectBody()).getFromItem());
                 sql = sql.replaceAll(origDomain, SimpleDBUtils.quoteName(domain));
+                log.info("EXECUTING QUERY: " + sql);
                 SelectRequest selectRequest = new SelectRequest(sql);
                 List<Item> items = this.connection.getSimpleDB().select(selectRequest)
                         .getItems();
                 return getSimpleDBResultSet(domain, items);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+        	log.error("Bad SQL:" + sql, e);
             throw new SQLException("exception caught in executing query");
         }
     }
@@ -319,4 +329,16 @@ public class SimpleDBStatement extends AbstractStatement {
         return new SimpleDBResultSet(this.connection,
                 new ArrayList<Item>(), "");
     }
+
+	@Override
+	public void closeOnCompletion() throws SQLException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean isCloseOnCompletion() throws SQLException {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

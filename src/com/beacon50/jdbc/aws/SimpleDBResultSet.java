@@ -102,6 +102,9 @@ public class SimpleDBResultSet extends AbstractResultSet {
 
         Item item = items.get(currentPos);
         List<Attribute> attributes = item.getAttributes();
+        //BobP (2/20/2013): Added this in case itemName() was in the select list.  Make sure itemName is always at the end of the select list for this 
+        //to work!
+        if ( columnIndex == (attributes.size() + 1) ) return item.getName();
         Attribute attribute = attributes.get((columnIndex - 1));
         return getAttributeValue(attribute);
     }
@@ -136,5 +139,18 @@ public class SimpleDBResultSet extends AbstractResultSet {
 
 	public void close() throws SQLException {
 		this.currentPos = -1;
+	}
+
+	@Override
+	public <T> T getObject(int columnIndex, Class<T> type) throws SQLException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public <T> T getObject(String columnLabel, Class<T> type)
+			throws SQLException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }	

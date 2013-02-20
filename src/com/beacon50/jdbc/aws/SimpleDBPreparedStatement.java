@@ -85,17 +85,18 @@ public class SimpleDBPreparedStatement extends AbstractPreparedStatement {
             	this.sql = this.sql.replaceFirst("\\?", SimpleDBUtils.quoteValue(value));
             }
             
-            log.info("after replacing ?'s, new sql is : " + this.sql);
             
             String origDomain = ((PlainSelect) select.getSelectBody()).getFromItem().toString();
             String domain =((PlainSelect) select.getSelectBody()).getFromItem().toString();
             sql = sql.replaceAll(origDomain, SimpleDBUtils.quoteName(domain));
+            log.info("after replacing ?'s, new sql is : " + this.sql);
             SelectRequest selectRequest = new SelectRequest(sql);
             List<Item> items = this.connection.getSimpleDB().select(selectRequest)
                     .getItems();
+            log.info("Found " + items.size() + " records.");
             return getSimpleDBResultSet(domain, items);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("exception caught in executing query: " + this.sql,e);
             throw new SQLException("exception caught in executing query");
         }
     }
@@ -318,6 +319,18 @@ public class SimpleDBPreparedStatement extends AbstractPreparedStatement {
 
 	public ResultSet getResultSet() throws SQLException {
 		return this.resultSet;
+	}
+
+	@Override
+	public void closeOnCompletion() throws SQLException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean isCloseOnCompletion() throws SQLException {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 	

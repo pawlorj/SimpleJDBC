@@ -8,6 +8,7 @@ import com.amazonaws.services.simpledb.AmazonSimpleDBClient;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.concurrent.Executor;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.log4j.Logger;
@@ -89,5 +90,36 @@ public class SimpleDBConnection extends AbstractConnection {
 			throws SQLException {
 		log.info("createStatement(int resultSetType, int resultSetConcurrency) was called.");
 		return new SimpleDBStatement(this);
+	}
+
+	@Override
+	public void setSchema(String schema) throws SQLException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String getSchema() throws SQLException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void abort(Executor executor) throws SQLException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setNetworkTimeout(Executor executor, int milliseconds)
+			throws SQLException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public int getNetworkTimeout() throws SQLException {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 }
