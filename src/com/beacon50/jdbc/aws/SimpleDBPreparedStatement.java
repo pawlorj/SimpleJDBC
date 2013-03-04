@@ -200,7 +200,8 @@ public class SimpleDBPreparedStatement extends AbstractPreparedStatement {
             List<Column> columns = (List<Column>) update.getColumns();            
             List<ReplaceableAttribute> attributes = new ArrayList<ReplaceableAttribute>();
 
-            int count = 0;
+            @SuppressWarnings("unused")
+			int count = 0;
             for (int x = 0; x < sizeSets; x++) {
                 String attributeName = columns.get(x).getColumnName();
                 // System.out.println("looking for attribute name " +

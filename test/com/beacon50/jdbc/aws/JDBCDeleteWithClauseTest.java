@@ -50,7 +50,7 @@ public class JDBCDeleteWithClauseTest {
         String qry = "select * from `users` where name = 'Martha Roberts'";
         SelectRequest selectRequest = new SelectRequest(qry);
         boolean itemFound = false;
-        for (Item item : sdb.select(selectRequest).getItems()) {
+        for (@SuppressWarnings("unused") Item item : sdb.select(selectRequest).getItems()) {
             itemFound = true;
         }
         if (itemFound) {
