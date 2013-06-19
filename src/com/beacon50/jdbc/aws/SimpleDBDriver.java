@@ -23,26 +23,51 @@ public class SimpleDBDriver implements Driver {
 			e.printStackTrace();
 		}
 	}
-
-	/**
-	 * @param url
-	 * @param info
-	 * @return
-	 * @throws SQLException
-	 */
+	
 	public Connection connect(String url, Properties info) throws SQLException {
 		try {
-			log.info("GETTING AWS SIMPLE DB CONNECTION");
 			if (!url.startsWith("jdbc:simpledb")) {
 				throw new SQLException("incorrect url");
 			}
-				
-			return new SimpleDBConnection("AKIAITCZNBYNWGSBNO2Q", "n+jBw3XI9cYqBvRQPyE2SHyIONa0acpyL2pW7eOg");
+ 
+			// small fix for Amazon
+			String[] urlParts = url.split("\\?");
+			if (urlParts.length == 2) {
+				String accessKey = "";
+				String secretKey = "";
+				url = urlParts[0];
+				for (String param : urlParts[1].split("&")) {
+					String[] keyValue = param.split("=");
+					if (keyValue.length == 2) {
+						if (keyValue[0].compareTo("user") == 0) {
+							accessKey = keyValue[1];
+						}
+						if (keyValue[0].compareTo("password") == 0) {
+							secretKey = keyValue[1];
+						}
+					}
+				}
+				if (!accessKey.isEmpty() && !secretKey.isEmpty()) {
+					info = new Properties(info);
+					info.setProperty("accessKey", accessKey);
+					info.setProperty("secretKey", secretKey);
+				}
+			}
+ 
+			//assume for now that if there is any proxy
+			//information, then do it all...
+			if (info.getProperty("proxyHost") != null && (!info.getProperty("proxyHost").equals(""))) {
+				return new SimpleDBConnection( info.getProperty("accessKey"),
+						info.getProperty("secretKey"), new SimpleDBProxy(info));
+			} else {
+				return new SimpleDBConnection(info.getProperty("accessKey"),
+						info.getProperty("secretKey"));
+			}
 		} catch (Exception e) {
 			throw new SQLException("unable to connect");
 		}
-
 	}
+
 
 	public boolean acceptsURL(String url) throws SQLException {
 		if (!url.startsWith("jdbc:simpledb")) {
